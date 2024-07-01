@@ -13,12 +13,20 @@ First of all the WT32-SC01-PLUS is using a custom ESP32-S3 module made by WIRELE
 It has 8Mb FLASH and 2Mb PSRAM. In platform.io the closest esp32-s3 for this is the um_tinys3 board.
 So I used this here, see platform.ini for details
 
-Note that after uploading the firmware, the device is NOT automatically restarted, you have to do this manually (BUG in ESP32 library)
+Note: that after uploading the firmware, the device is NOT automatically restarted, you have to do this manually (BUG in ESP32 library)
+
+Note: if you have issue with compiling process \[Upload\] Error2 you have to short the boot pin "GPIO 0" to grownd pefore plug-in the programmation cable
+[DebugPortLayout](https://github.com/CarloFalco/SC01Plus-platformio-display/tree/main/Datasheet/DebugPort.png)
+
+
 ## This template works together with the squareline editor from lvgl, this is the workflow used
 
 When working with the [squareline editor](https://squareline.io/) from lvgl, set the project in squareline to:
 - Arduino, with TFT_eSPI (which we cannot use, but will replace with LovyanGFX in this main.cpp file)
 - 480 x 320, 16 bit display
+you can find tutorial guide [here] (https://www.youtube.com/watch?v=9qp3Lmc8r-Q&list=PLaKCTGp44qf0_PaXDxMNZqnLEvRu3iM21)
+
+
 
 Export the template project AND export the UI Files
 You will get a project directory with two directories inside, 'ui' and 'libraries'

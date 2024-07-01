@@ -17,8 +17,15 @@
 
 #define LGFX_USE_V1
 #include <LovyanGFX.hpp>
+#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+
+#include "displayFcn.h"
+
+#include <lvgl.h>
+#include "ui/ui.h" // this is the ui generated with lvgl / squareline editor
 
 // SETUP LGFX PARAMETERS FOR WT32-SC01-PLUS
+
 class LGFX : public lgfx::LGFX_Device
 {
 
@@ -117,23 +124,13 @@ public:
   }
 };
 
-#include <lvgl.h>
-#include "ui/ui.h" // this is the ui generated with lvgl / squareline editor
+
 
 LGFX tft;
 
 #define screenWidth 480
 #define screenHeight 320
 
-// lv debugging can be set in lv_conf.h
-#if LV_USE_LOG != 0
-/* Serial debugging */
-void my_print(const char * buf)
-{
-    Serial.printf(buf);
-    Serial.flush();
-}
-#endif
 
 // create buffer for display
 static lv_disp_draw_buf_t draw_buf;
@@ -166,6 +163,12 @@ void my_touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
       #endif
     }
 }
+
+
+int number = 105;
+
+
+
 
 //************************************************************************************
 //  SETUP AND LOOP
@@ -210,4 +213,11 @@ void setup() {
 void loop() {
   lv_timer_handler();
   delay(5);
+  _ui_label_set_property(ui_Label2, _UI_LABEL_PROPERTY_TEXT, String(number).c_str());
+  tft.setBrightness(number);
+
+
 }
+
+
+

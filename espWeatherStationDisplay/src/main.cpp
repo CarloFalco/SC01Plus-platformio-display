@@ -213,8 +213,8 @@ void setup() {
 void loop() {
   lv_timer_handler();
   delay(5);
-  _ui_label_set_property(ui_Label2, _UI_LABEL_PROPERTY_TEXT, String(number).c_str());
-  tft.setBrightness(number);
+  _ui_label_set_property(ui_Counter, _UI_LABEL_PROPERTY_TEXT, String(number).c_str()); // per modificare una label
+
 
 
 }

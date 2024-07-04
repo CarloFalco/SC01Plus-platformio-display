@@ -201,8 +201,6 @@ void connect_to_wifi() {
   Serial.print("SSID: ");
   Serial.println(wifiCredentials.ssid);
   Serial.print("Password: ");
-  Serial.println(password);
-  Serial.print("Password: ");
   Serial.println(wifiCredentials.password);
 
   WiFi.begin(wifiCredentials.ssid, password.c_str());
@@ -222,11 +220,12 @@ void connect_to_wifi() {
 
 void password_popup() {
   lv_obj_t *popup = lv_obj_create(lv_scr_act());
-  lv_obj_set_size(popup, 300, 155);
+  lv_obj_set_size(popup, 320, 155);
   lv_obj_align(popup, LV_ALIGN_CENTER, 0, -80); // questo era -50
 
   lv_obj_t *label = lv_label_create(popup);
-  lv_label_set_text_fmt(label, "Inserisci la password per %s:", wifiCredentials.ssid);
+  String TextStr = "Inserisci la password per:\n" + wifiCredentials.ssid;
+  lv_label_set_text_fmt(label, TextStr.c_str());
   lv_obj_align(label, LV_ALIGN_TOP_MID, 0, -10);
 
   lv_obj_t *ta = lv_textarea_create(popup);
@@ -270,13 +269,8 @@ void network_selected(lv_event_t *e) {
   const char* ssid = lv_label_get_text(label);
 
   // Stampa l'SSID sul monitor seriale
-  Serial.print("Network selected: ");
-  Serial.println(ssid);
-  Serial.print("Network selected: ");
-  Serial.println(String(ssid));
   wifiCredentials.ssid = String(ssid);
-  Serial.print("Network selected: ");
-  Serial.println(wifiCredentials.ssid);
+
 
   close_popup(); // Chiudi il pannello di selezione della rete
   password_popup();
@@ -284,7 +278,7 @@ void network_selected(lv_event_t *e) {
 
 void create_wifi_popup() {
   lv_obj_t *popup = lv_obj_create(lv_scr_act());
-  lv_obj_set_size(popup, 300, 200);
+  lv_obj_set_size(popup, 320, 200);
   lv_obj_align(popup, LV_ALIGN_CENTER, 0, 0);
 
   lv_obj_t *label = lv_label_create(popup);

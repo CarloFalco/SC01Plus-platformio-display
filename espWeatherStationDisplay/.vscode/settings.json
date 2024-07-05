@@ -3,6 +3,7 @@
         "ui_helpers.h": "c",
         "lvgl.h": "c",
         "system_error": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "sstream": "cpp"
     }
 }

@@ -17,6 +17,7 @@
 
 #define LGFX_USE_V1
 #include <LovyanGFX.hpp>
+#include "wifi_ui.h"
 #include <WiFi.h>
 
 #include "displayFcn.h"
@@ -131,16 +132,7 @@ LGFX tft;
 #define screenWidth 480
 #define screenHeight 320
 
-
-struct WifiCredentials {
-  String ssid;
-  String password;
-  lv_obj_t *popup;
-  lv_obj_t *kb;
-  lv_obj_t *ta;
-};
-
-WifiCredentials wifiCredentials;
+WifiCredentials wifiCredentials; // wifi credentials structure, store all popup and ssid and password
 
 
 // create buffer for display
@@ -174,135 +166,6 @@ void my_touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
       #endif
     }
 }
-
-/*
-void event_handler(lv_event_t *e) {
-  lv_obj_t *obj = lv_event_get_target(e);
-  lv_obj_del(lv_obj_get_parent(obj));
-}
-*/
-
-void close_popup() {
-  if (wifiCredentials.popup) {
-    lv_obj_del_async(wifiCredentials.popup);
-    wifiCredentials.popup = nullptr;
-  }
-  if (wifiCredentials.kb) {
-    lv_obj_del_async(wifiCredentials.kb);
-    wifiCredentials.kb = nullptr;
-  }
-}
-
-void connect_to_wifi() {
-  String password = lv_textarea_get_text(wifiCredentials.ta);
-
-  wifiCredentials.password = password;
-  // Stampa SSID e password sul monitor seriale
-  Serial.print("SSID: ");
-  Serial.println(wifiCredentials.ssid);
-  Serial.print("Password: ");
-  Serial.println(wifiCredentials.password);
-
-  WiFi.begin(wifiCredentials.ssid, password.c_str());
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("Connesso!");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  close_popup(); // Chiudi il popup e la tastiera
-}
-
-void password_popup() {
-  lv_obj_t *popup = lv_obj_create(lv_scr_act());
-  lv_obj_set_size(popup, 320, 155);
-  lv_obj_align(popup, LV_ALIGN_CENTER, 0, -80); // questo era -50
-
-  lv_obj_t *label = lv_label_create(popup);
-  String TextStr = "Inserisci la password per:\n" + wifiCredentials.ssid;
-  lv_label_set_text_fmt(label, TextStr.c_str());
-  lv_obj_align(label, LV_ALIGN_TOP_MID, 0, -10);
-
-  lv_obj_t *ta = lv_textarea_create(popup);
-  lv_textarea_set_password_mode(ta, true);
-  lv_obj_set_size(ta, 220, 40);
-  lv_obj_align(ta, LV_ALIGN_CENTER, 0, -10);
-
-  lv_obj_t *btn = lv_btn_create(popup);
-  lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, 0);
-  lv_obj_t *btn_label = lv_label_create(btn);
-  lv_label_set_text(btn_label, "Connetti");
-
-  // Creazione della tastiera
-  lv_obj_t *kb = lv_keyboard_create(lv_scr_act());
-  lv_keyboard_set_textarea(kb, ta);
-
-  // Popola la struttura con i dati necessari
-
-  wifiCredentials.popup = popup;
-  wifiCredentials.kb = kb;
-  wifiCredentials.ta = ta;
-
-  // Callback del pulsante "Connetti"
-  lv_obj_add_event_cb(btn, [](lv_event_t *e) {
-    connect_to_wifi();
-  }, LV_EVENT_CLICKED, NULL);
-
-  // Callback per il pulsante "Enter" sulla tastiera
-  lv_obj_add_event_cb(kb, [](lv_event_t *e) {
-    lv_event_code_t code = lv_event_get_code(e);
-    if (code == LV_EVENT_READY) {
-      connect_to_wifi();
-    }
-  }, LV_EVENT_READY, NULL);
-
-}
-
-void network_selected(lv_event_t *e) {
-  lv_obj_t *btn = lv_event_get_target(e);
-  lv_obj_t *label = lv_obj_get_child(btn, 0);
-  const char* ssid = lv_label_get_text(label);
-
-  // Stampa l'SSID sul monitor seriale
-  wifiCredentials.ssid = String(ssid);
-
-
-  close_popup(); // Chiudi il pannello di selezione della rete
-  password_popup();
-}
-
-void create_wifi_popup() {
-  lv_obj_t *popup = lv_obj_create(lv_scr_act());
-  lv_obj_set_size(popup, 320, 200);
-  lv_obj_align(popup, LV_ALIGN_CENTER, 0, 0);
-
-  lv_obj_t *label = lv_label_create(popup);
-  lv_label_set_text(label, "Seleziona una rete WiFi:");
-  lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 10);
-
-  lv_obj_t *list = lv_list_create(popup);
-  lv_obj_set_size(list, 180, 120);
-  lv_obj_align(list, LV_ALIGN_CENTER, 0, 20);
-
-  // Scansione delle reti WiFi
-  int n = WiFi.scanNetworks();
-  if (n == 0) {
-    lv_label_set_text(label, "Nessuna rete trovata");
-  } else {
-    for (int i = 0; i < n; ++i) {
-      lv_obj_t *btn = lv_list_add_btn(list, NULL, WiFi.SSID(i).c_str());
-      lv_obj_add_event_cb(btn, network_selected, LV_EVENT_CLICKED, NULL);
-    }
-  }
-
-  wifiCredentials.popup = popup; // Assegna il popup corrente alla struttura
-}
-
 
 
 
